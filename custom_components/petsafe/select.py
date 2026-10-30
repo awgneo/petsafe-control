@@ -1,34 +1,41 @@
-from homeassistant.config_entries import ConfigEntry
+"""PetSafe selects: a litter box's rake timer."""
+
+from __future__ import annotations
+
+from homeassistant.components.select import SelectEntity, SelectEntityDescription
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from . import PetSafeCoordinator, SelectEntities
-from .const import DOMAIN
+from .coordinator import PetSafeConfigEntry
+from .entity import PetSafeLitterboxEntity
+
+# Minutes after a cat leaves before the rake runs, as the ScoopFree app offers them
+RAKE_TIMER = SelectEntityDescription(
+    key="rake_timer",
+    name="Rake Timer",
+    entity_category=EntityCategory.CONFIG,
+    options=["5", "10", "15", "20", "25", "30"],
+)
 
 
-async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry, add_entities):
-    coordinator: PetSafeCoordinator = hass.data[DOMAIN][config.entry_id]
+async def async_setup_entry(
+    hass: HomeAssistant, entry: PetSafeConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback
+) -> None:
+    """Add every litter box's rake timer."""
+    coordinator = entry.runtime_data
+    async_add_entities(PetSafeRakeTimer(coordinator, api_name, RAKE_TIMER) for api_name in coordinator.data.litterboxes)
 
-    litterboxes = None
-    try:
-        litterboxes = await coordinator.get_litterboxes()
-    except Exception as ex:
-        raise ConfigEntryNotReady(
-            "Failed to retrieve PetSafe scoopfree devices"
-        ) from ex
 
-    entities = []
-    for litterbox in litterboxes:
-        entities.append(
-            SelectEntities.PetSafeLitterboxSelectEntity(
-                hass=hass,
-                name="Rake Timer",
-                device_type="rake_timer",
-                device=litterbox,
-                coordinator=coordinator,
-                options=["5", "10", "15", "20", "25", "30"],
-                entity_category=EntityCategory.CONFIG,
-            )
-        )
-    add_entities(entities)
+class PetSafeRakeTimer(PetSafeLitterboxEntity, SelectEntity):
+    """A litter box's rake timer (minutes)."""
+
+    @property
+    def current_option(self) -> str:
+        """The timer's minutes."""
+        return str(self.litterbox.device.data["shadow"]["state"]["reported"]["rakeDelayTime"])
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the timer, then read the litter box again."""
+        await self.litterbox.device.modify_timer(int(option), False)
+        await self.coordinator.async_request_refresh()

@@ -16,8 +16,7 @@ from homeassistant.const import (
 )
 from homeassistant.data_entry_flow import FlowResult
 
-import petsafe
-
+from . import petsafe_api as petsafe
 from .const import CONF_REFRESH_TOKEN, DOMAIN
 
 STEP_USER_DATA_SCHEMA = vol.Schema({vol.Required(CONF_EMAIL): str})
@@ -61,7 +60,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_code()
             except petsafe.client.InvalidUserException:
                 errors[CONF_EMAIL] = "invalid_user"
-            except Exception:
+            except Exception:  # noqa: BLE001
                 errors[CONF_BASE] = "cannot_connect"
 
             return self.async_show_form(
@@ -85,7 +84,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_CODE] = "invalid_code"
             except petsafe.client.InvalidCodeException:
                 errors[CONF_CODE] = "invalid_code"
-            except Exception:
+            except Exception:  # noqa: BLE001
                 errors[CONF_BASE] = "unknown_error"
             return self.async_show_form(
                 step_id="code", data_schema=STEP_CODE_DATA_SCHEMA, errors=errors

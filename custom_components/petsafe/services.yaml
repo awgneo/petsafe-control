@@ -73,7 +73,7 @@ modify_schedule:
 
 feed:
   name: Feed a meal
-  description: Trigger the feeder to begin feeding a meal
+  description: Trigger the feeder to begin feeding a meal (its portion, unless an amount or cups is given)
   target:
     device:
       integration: petsafe
@@ -82,12 +82,22 @@ feed:
   fields:
     amount:
       name: Amount
-      description: The feeding amount in 1/8 cup
-      required: true
+      description: The feeding amount in 1/8 cup (leave out for the feeder's portion)
+      required: false
       selector:
         number:
           min: 1
           max: 32
+    cups:
+      name: Cups
+      description: The feeding amount in cups, in eighths (instead of amount)
+      required: false
+      selector:
+        number:
+          min: 0.125
+          max: 4
+          step: 0.125
+          unit_of_measurement: cups
     slow_feed:
       name: Slow Feed
       description: Whether to use slow feed mode. If not specified, uses the current feeder setting.

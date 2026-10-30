@@ -1,19 +1,19 @@
 {
-  "version": "1.4.0",
   "domain": "petsafe",
   "name": "PetSafe",
-  "config_flow": true,
-  "documentation": "https://github.com/dcmeglio/homeassistant-petsafe/blob/master/README",
-  "requirements": [
-    "petsafe==2.0.6"
-  ],
-  "issue_tracker": "https://github.com/dcmeglio/homeassistant-petsafe/issues",
-  "ssdp": [],
-  "zeroconf": [],
-  "homekit": {},
-  "dependencies": [],
   "codeowners": [
-    "@dcmeglio"
+    "@awgneo"
   ],
-  "iot_class": "cloud_polling"
+  "config_flow": true,
+  "documentation": "https://github.com/awgneo/petsafe-control",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/awgneo/petsafe-control/issues",
+  "loggers": [
+    "custom_components.petsafe.petsafe_api"
+  ],
+  "requirements": [
+    "botocore>=1.42.0"
+  ],
+  "version": "2.0.0"
 }

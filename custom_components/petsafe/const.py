@@ -1,4 +1,4 @@
-"""Constants for the PetSafe Integration integration."""
+"""Constants for the PetSafe integration."""
 
 DOMAIN = "petsafe"
 CONF_REFRESH_TOKEN = "refresh_token"
@@ -15,7 +15,15 @@ SERVICE_PRIME = "prime"
 
 ATTR_TIME = "time"
 ATTR_AMOUNT = "amount"
+ATTR_CUPS = "cups"
 ATTR_SLOW_FEED = "slow_feed"
+
+# A feeder measures food in eighths of a cup, from one eighth to four cups a feeding
+EIGHTHS_PER_CUP = 8
+MIN_EIGHTHS = 1
+MAX_EIGHTHS = 32
+# Priming fills the feeder's chute: 5/8 cup
+PRIME_EIGHTHS = 5
 
 RAKE_FINISHED = "RAKE_FINISHED"
 CAT_IN_BOX = "CAT_IN_BOX"

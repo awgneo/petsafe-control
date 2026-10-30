@@ -1,12 +1,12 @@
 [project]
 name = "petsafe-control"
-version = "1.4.0"
+version = "2.0.0"
 description = "Home Assistant custom component for PetSafe Smart Feed feeders and ScoopFree litter boxes"
 readme = "README.md"
 requires-python = ">=3.14.3"
 dependencies = [
-    "homeassistant>=2026.3.4",
-    "petsafe==2.0.6",
+    "botocore>=1.42.0",
+    "homeassistant>=2026.10.4",
 ]
 
 [dependency-groups]
@@ -16,4 +16,8 @@ dev = [
     "pytest-homeassistant-custom-component>=0.13.322",
     "pytest-cov>=7.0.0",
     "ruff>=0.15.10",
+    # Home Assistant's conversation component, which calling an LLM tool loads, at its manifest's versions
+    "gazetteer-matcher==1.1.0",
+    "hassil==3.12.1",
+    "home-assistant-intents==2026.10.6",
 ]
