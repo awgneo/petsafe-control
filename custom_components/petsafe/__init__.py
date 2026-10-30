@@ -1,4 +1,4 @@
-"""The PetSafe integration: Smart Feed feeders and ScoopFree litter boxes, through PetSafe's cloud."""
+"""The PetSafe Control integration: Smart Feed feeders and ScoopFree litter boxes, through PetSafe's cloud."""
 
 from __future__ import annotations
 

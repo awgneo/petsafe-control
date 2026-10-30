@@ -13,7 +13,7 @@ async def feed_pet(hass, **args):
     """Calls FeedPet as an assistant does, through every LLM API merged (the MCP server's All LLM APIs)."""
     context = llm.LLMContext(platform="mcp_server", context=Context(), language="en", assistant="conversation", device_id=None)
     api = await llm.async_get_api(hass, [api.id for api in llm.async_get_apis(hass)], context)
-    # Merged with other APIs, its name is namespaced (petsafe__FeedPet)
+    # Merged with other APIs, its name is namespaced (petsafe_control__FeedPet)
     (name,) = [tool.name for tool in api.tools if tool.name.endswith("FeedPet")]
     return await api.async_call_tool(llm.ToolInput(tool_name=name, tool_args=args))
 

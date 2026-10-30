@@ -109,4 +109,4 @@ class PetSafeAPI(llm.API):
 @callback
 def async_setup_llm(hass: HomeAssistant) -> None:
     """Offer PetSafe's tools to assistants (an MCP server serving all LLM APIs, Assist's conversation agents)."""
-    llm.async_register_api(hass, PetSafeAPI(hass=hass, id=DOMAIN, name="PetSafe"))
+    llm.async_register_api(hass, PetSafeAPI(hass=hass, id=DOMAIN, name="PetSafe Control"))

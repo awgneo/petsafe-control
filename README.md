@@ -1,4 +1,4 @@
-# PetSafe for Home Assistant
+# PetSafe Control for Home Assistant
 
 Feed your pets and watch their feeders from Home Assistant, and let assistants (Claude through Home Assistant's MCP server, or Assist) feed them by name: "feed the dogs", "feed Shiloh a half cup". PetSafe Smart Feed feeders and ScoopFree litter boxes, through PetSafe's cloud, as PetSafe's apps reach them.
 
@@ -12,14 +12,14 @@ Feed your pets and watch their feeders from Home Assistant, and let assistants (
 ### HACS
 1. If the original PetSafe integration (dcmeglio's `homeassistant-petsafe`) is installed, remove it in HACS first: both install to `custom_components/petsafe`. Its sign-in, devices and entities carry over to this one.
 2. Go to HACS → Integrations → ⋮ → Custom repositories, and add this repository's URL as an Integration.
-3. Download **PetSafe**, then restart Home Assistant.
-4. If it isn't set up yet: **Settings → Devices & services → Add integration → PetSafe**.
+3. Download **PetSafe Control**, then restart Home Assistant.
+4. If it isn't set up yet: **Settings → Devices & services → Add integration → PetSafe Control**.
 
 ### Signing in
 Enter your PetSafe account's email; PetSafe emails a code, which you enter next. Home Assistant keeps the sign-in's tokens, not a password (PetSafe accounts have none). Then choose the feeders and litter boxes to add.
 
 ### Removal
-1. Go to **Settings → Devices & services → PetSafe**, open the ⋮ menu, and choose **Delete**.
+1. Go to **Settings → Devices & services → PetSafe Control**, open the ⋮ menu, and choose **Delete**.
 2. To remove the code too, remove the integration in HACS and restart Home Assistant.
 
 ## What you can do
@@ -64,7 +64,7 @@ Every action targets feeders by entity, device, area, floor or label.
 
 The integration offers assistants one tool, **FeedPet**: a pet's name (as its feeder is named: "Eva Feeder" feeds Eva) or `all`, and optionally cups. Without cups, each pet gets its portion; with them, that feeding only, which leaves the portion as it was. An amount a feeder can't give (under 1/8 or over 4 cups) is refused.
 
-It's served as Home Assistant's **PetSafe** LLM API: an MCP server set to serve all LLM APIs offers it to Claude as `petsafe__FeedPet`; a conversation agent offers it when PetSafe is among its APIs.
+It's served as Home Assistant's **PetSafe Control** LLM API: an MCP server set to serve all LLM APIs offers it to Claude as `petsafe_control__FeedPet`; a conversation agent offers it when PetSafe Control is among its APIs.
 
 ## Developing
 
