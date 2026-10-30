@@ -1,4 +1,4 @@
-"""Feeding for assistants: PetSafe's LLM API, whose one tool feeds a pet (or every pet) by name."""
+"""Feeding for assistants: PetSafe's LLM tools platform, adding a tool to Assist's that feeds a pet by name."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import re
 
 import probatio
 import voluptuous as vol
+from homeassistant.components.llm import LLMTools
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
@@ -18,7 +19,7 @@ from .coordinator import PetSafeCoordinator
 ALL = "all"
 
 PROMPT = (
-    "PetSafe feeders are named after the pet they feed. To feed a pet, use FeedPet with its name (or 'all' for "
+    "PetSafe feeders are named after the pet they feed. To feed a pet, use petsafe__FeedPet with its name (or 'all' for "
     "every pet); give cups only for an amount other than the pet's usual portion, such as a snack."
 )
 
@@ -42,7 +43,8 @@ def feeders_by_name(hass: HomeAssistant) -> dict[str, tuple[PetSafeCoordinator, 
 class FeedPetTool(llm.Tool):
     """Feeds a pet by name, or every pet: its usual portion, or the cups given."""
 
-    name = "FeedPet"
+    # Prefixed with the domain, as Home Assistant requires of a platform's tools
+    name = f"{DOMAIN}__FeedPet"
     title = "Feed a pet"
     description = (
         "Feeds a pet now from its PetSafe feeder. Feeders are named after their pet (e.g. 'Eva Feeder' feeds Eva). "
@@ -98,15 +100,9 @@ class FeedPetTool(llm.Tool):
         return llm.ToolResult(data={"fed": fed})
 
 
-class PetSafeAPI(llm.API):
-    """PetSafe's tools for assistants."""
-
-    async def async_get_api_instance(self, llm_context: llm.LLMContext) -> llm.APIInstance:
-        """The API's prompt and tools."""
-        return llm.APIInstance(api=self, api_prompt=PROMPT, llm_context=llm_context, tools=[FeedPetTool()])
-
-
 @callback
-def async_setup_llm(hass: HomeAssistant) -> None:
-    """Offer PetSafe's tools to assistants (an MCP server serving all LLM APIs, Assist's conversation agents)."""
-    llm.async_register_api(hass, PetSafeAPI(hass=hass, id=DOMAIN, name="PetSafe Control"))
+def async_get_tools(hass: HomeAssistant, llm_context: llm.LLMContext, api_id: str) -> LLMTools | None:
+    """FeedPet, among Assist's tools (what an MCP server or a conversation agent offers), while a feeder is set up."""
+    if api_id != llm.LLM_API_ASSIST or not feeders_by_name(hass):
+        return None
+    return LLMTools(tools=[FeedPetTool()], prompt=PROMPT)

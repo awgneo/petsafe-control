@@ -62,9 +62,9 @@ Every action targets feeders by entity, device, area, floor or label.
 
 ## Assistants
 
-The integration offers assistants one tool, **FeedPet**: a pet's name (as its feeder is named: "Eva Feeder" feeds Eva) or `all`, and optionally cups. Without cups, each pet gets its portion; with them, that feeding only, which leaves the portion as it was. An amount a feeder can't give (under 1/8 or over 4 cups) is refused.
+The integration gives assistants one tool, **FeedPet**: a pet's name (as its feeder is named: "Eva Feeder" feeds Eva) or `all`, and optionally cups. Without cups, each pet gets its portion; with them, that feeding only, which leaves the portion as it was. An amount a feeder can't give (under 1/8 or over 4 cups) is refused.
 
-It's served as Home Assistant's **PetSafe Control** LLM API: an MCP server set to serve all LLM APIs offers it to Claude as `petsafe_control__FeedPet`; a conversation agent offers it when PetSafe Control is among its APIs.
+It joins Home Assistant's **Assist** tools (like `GetLiveContext`), as `petsafe__FeedPet`, whenever a feeder is set up: an MCP server (Claude's way in) and any conversation agent using Assist offer it, with nothing to expose.
 
 ## Developing
 

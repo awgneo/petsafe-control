@@ -10,7 +10,6 @@ from homeassistant.helpers.typing import ConfigType
 
 from .const import CONF_REFRESH_TOKEN, DOMAIN
 from .coordinator import PetSafeConfigEntry, PetSafeCoordinator
-from .llm import async_setup_llm
 from .petsafe_api import PetSafeClient
 from .services import async_setup_services
 
@@ -26,9 +25,8 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Register PetSafe's actions and its tools for assistants, once."""
+    """Register PetSafe's actions, once."""
     async_setup_services(hass)
-    async_setup_llm(hass)
     return True
 
 
