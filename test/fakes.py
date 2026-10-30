@@ -128,20 +128,43 @@ class FakeCloud:
         return httpx.Response(200, json={})
 
 
+# The code PetSafe emails
+CODE = "123456"
+
+
 class FakeCognito:
-    """Cognito's token refresh: every refresh is counted, and its tokens last an hour."""
+    """Cognito's sign-in by emailed code, and its token refresh: every refresh is counted, tokens last an hour."""
 
     def __init__(self) -> None:
         self.refreshes = 0
 
     def initiate_auth(self, **kwargs: Any) -> dict[str, Any]:
-        """Refresh the tokens."""
+        """Start a sign-in (a code is emailed), or refresh the tokens."""
+        if kwargs["AuthFlow"] == "CUSTOM_AUTH":
+            return {
+                "ChallengeName": "CUSTOM_CHALLENGE",
+                "Session": "session",
+                "ChallengeParameters": {"USERNAME": kwargs["AuthParameters"]["USERNAME"]},
+            }
         assert kwargs["AuthFlow"] == "REFRESH_TOKEN_AUTH"
         self.refreshes += 1
         return {
             "AuthenticationResult": {
                 "IdToken": f"id-{self.refreshes}",
                 "AccessToken": f"access-{self.refreshes}",
+                "ExpiresIn": 3600,
+            }
+        }
+
+    def respond_to_auth_challenge(self, **kwargs: Any) -> dict[str, Any]:
+        """Answer the emailed code: tokens when it's right, another challenge when it isn't."""
+        if kwargs["ChallengeResponses"]["ANSWER"] != CODE:
+            return {"ChallengeName": "CUSTOM_CHALLENGE", "Session": "session"}
+        return {
+            "AuthenticationResult": {
+                "IdToken": "id-signed-in",
+                "AccessToken": "access-signed-in",
+                "RefreshToken": "refresh-signed-in",
                 "ExpiresIn": 3600,
             }
         }
