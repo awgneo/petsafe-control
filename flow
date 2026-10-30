@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# petsafe-control: a Home Assistant integration for PetSafe Smart Feed feeders and ScoopFree litter boxes
+# ==============================================================================
+# A Python project managed with uv: 'flow test' runs its pytest suite (test/) through uv.
+
+source ./flows/base
+source ./flows/cell/base
+
+# Dependencies
+FLOWS_DEPENDENCIES+=(uv)
+
+# Hooks
+# In CI, 'flow ci test' installs the project and its dev dependencies first (uv.lock, as locked)
+CI_SETUP_HOOKS+=(petsafe-packages)
+
+petsafe-packages() {
+  uv sync --frozen
+}
+
+# Lints the integration and its tests with ruff
+petsafe-lint() {
+  uv run ruff check custom_components test || abort "ruff found problems" 2
+  success "Lint passed"
+}
+
+# ------------------------------------------------------------------------------
+# Registration
+# ------------------------------------------------------------------------------
+
+petsafe-usage() {
+  echo "lint|Lint the integration and its tests (ruff)"
+}
+
+petsafe-flow() {
+  case "$1" in
+    lint) petsafe-lint; return $? ;;
+    *) return 127 ;;
+  esac
+}
+
+flows-register "petsafe" true
+flows-dispatch "$@"
